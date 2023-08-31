@@ -1,0 +1,13 @@
+header.header
+    .container.header-container
+        .header__logo Bookshop
+        nav.header__nav
+            ul
+                li: a.header__nav_active(href="") books
+                li: a(href="") audiobooks
+                li: a(href="") Stationery & gifts
+                li: a(href="") blog
+        .user-area
+            a.user-area__profile: img(src=require("../img/profile.svg"), alt="profile")
+            a.user-area__search: img(src=require("../img/search.svg"), alt="search")
+            a.user-area__cart: img(src=require("../img/cart.svg"), alt="cart")

@@ -1,0 +1,12 @@
+mixin categories-nav(...items)
+    ul.categories-nav
+        //- li: a.categories-nav__item.categories-nav__item_first= first
+        each item in items
+            li: a.categories-nav__item= item
+
+section.catalog
+    .categories.container
+        +categories-nav('Architecture', 'Art & Fashion', 'Biography', 'Business', 'Crafts & Hobbies', 'Drama', 'Fiction', 'Food & Drink', 'Health & Wellbeing', 'History & Politics', 'Humor', 'Poetry', 'Psychology', 'Science', 'Technology', 'Travel & Maps')
+        .bookshelf
+            .books
+            button.btn.btn-load-more Load more

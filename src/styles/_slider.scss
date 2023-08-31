@@ -1,0 +1,78 @@
+@import 'variables';
+
+@mixin card-link($width, $height, $right, $background-color) {
+    font-weight: 700;
+    font-size: 18px;
+    line-height: 1.22;
+    text-transform: uppercase;
+    color: $base-black;
+    position: absolute;
+    width: $width;
+    height: $height;
+    right: $right;
+    background-color: $background-color;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    row-gap: 4px;
+    justify-content: end;
+    img {
+      width: 55px;
+    }
+  }
+
+.slider {
+    position: relative;
+    padding-top: 116px;
+    margin-bottom: 105px;
+  }
+  .slider__images {
+    position: relative;
+    width: 1120px;
+    height: 702px;
+  }
+  .slider__images {
+    .image {
+        background-size: cover;
+        background-position: center center;
+        width: 100%;
+        height: 100%;
+        position: absolute;
+        left: 0;
+        top: 0;
+        opacity: 0;
+        transition: opacity 800ms ease;
+        &.active{
+            opacity: 1;
+          }
+      }
+  }
+  .slider__dots {
+    display: flex;
+    justify-content: center;
+    column-gap: 10px;
+    position: absolute;
+    left: 0;
+    bottom: -23px;
+    width: 100%;
+  }
+  .slider__dots-item {
+    width: 12px;
+    height: 12px;
+    background: #EFEEF6;
+    border-radius: 50%;
+    cursor: pointer;
+    transition: background 0.4s ease;
+    &:hover, &.active {
+      background: #9E98DC;
+    }
+  }
+
+  .card-link1 {
+    @include card-link(149px, 204px, -86px, #9E98DC);
+    top: 198px;
+  }
+  .card-link2 {
+    @include card-link(158px, 273px, -158px - 23px, #FF8FE6);
+    bottom: 54px;
+  }

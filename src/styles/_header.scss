@@ -1,0 +1,47 @@
+@import 'variables';
+
+@mixin column-gap40 {
+    display: flex;
+    column-gap: 40px;
+}
+.header {
+    position: fixed;
+    z-index: 10;
+    background-color: #fff;
+    width: 100%;
+}
+.header-container {
+    position: sticky;
+    top: 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-top: 47px;
+    padding-bottom: 40px;
+}
+.header__logo {
+    font-weight: 700;
+    font-size: 24px;
+    line-height: 1.21;
+}
+.header__nav {
+    ul {
+    @include column-gap40();
+    }
+    a {
+        font-weight: 700;
+        font-size: 10px;
+        line-height: 1.2;
+        text-transform: uppercase;
+        color: $base-gray;
+        &.header__nav_active {
+            color: $base-black;
+        }
+    }
+}
+.header__nav_active {
+    color: $base-black;
+}
+.user-area {
+    @include column-gap40();
+}
