@@ -2,21 +2,18 @@
 export function initCatalog() {
     const catalog = document.querySelector('.catalog');
     const categories = catalog.querySelectorAll('.categories-nav__item');
-    // console.log('categories', categories[0])
     const categoriesSubject = ['Architecture', 'Art', 'Biography & Autobiography', 'Business', 'Crafts & Hobbies', 'Drama', 'Fiction', 'Cooking', 'Health & Fitness', 'History', 'Humor', 'Poetry', 'Psychology', 'Science', 'Technology', 'Travel']
     let isFirstLoadig = true
     const btnLoadMore = catalog.querySelector('.btn-load-more');
     let books = catalog.querySelector('.books');
-    // console.log('btnLoadMore', btnLoadMore)
     let btnBuyNow
+    const cart = document.querySelector('.user-area__cart')
 
     async function fetchData(item, startIndex) {
         const key = process.env.API_KEY
         try {
-            // console.log('try')
             const response = await fetch(`https://www.googleapis.com/books/v1/volumes?q="subject:${item.dataset.index}"&key=${key}&printType=books&startIndex=${startIndex}&maxResults=6&langRestrict=en`);
             const result = await response.json();
-            // console.log('result', result)
             const items = result.items
             createBookCardBlock(items)
         } catch {
@@ -63,12 +60,10 @@ export function initCatalog() {
     categories.forEach((item, index) => {
         item.dataset.index = categoriesSubject[index]
         userRequest(item)
-        // loadMore(item)
     })
 
     function setActiveCategory(item) {
         const activeCategory = catalog.querySelector('.active-category');
-        // console.log('active', activeCategory)
         if (activeCategory) {
             activeCategory.classList.remove("active-category")
         }
@@ -81,98 +76,202 @@ export function initCatalog() {
     }
 
     defaultRequest(categories[0])
-    // fetchData(categories[0], 0)
 
     function userRequest(item) {
         item.addEventListener('click', () => {
             isFirstLoadig = true
-            fetchData(item, 0)
-            setActiveCategory(item)
+            defaultRequest(item)
+            btnLoadMore.removeEventListener('click', handleBtnLoadMore , { once: true })
         })
 
     }
 
-    let currentCategory = catalog.querySelector('.active-category');
-    // console.log('currentCategory', currentCategory)
+    // function loadMore() {
+    //     let startIndex = 0
+    //     btnLoadMore.addEventListener('click', () => {
+    //         const activeCategory = catalog.querySelector('.active-category');
+    //         if (isFirstLoadig) {
+    //             startIndex = 6
+    //         }
+    //         isFirstLoadig = false
+    //         fetchData(activeCategory, startIndex)
+    //         startIndex += 6
+    //     })
+    // }
 
-    function loadMore() {
-        let startIndex = 0
-        btnLoadMore.addEventListener('click', () => {
-            const activeCategory = catalog.querySelector('.active-category');
-            // console.log(activeCategory, activeCategory)
-            if (isFirstLoadig) {
-                startIndex = 6
+
+    cart.insertAdjacentHTML('beforeend', '<div class="cart-count cart-hidden"></div>')
+    const booksCounter = cart.querySelector('.cart-count')
+    let booksInCartCount = 0
+    let booksInCartCounter = localStorage.getItem('booksInCartCount')
+    // console.log('booksInCartCounter', booksInCartCounter)
+
+    function setBooksInCart() {
+        booksCounter.classList.remove('cart-hidden')
+        booksCounter.innerHTML = booksInCartCounter
+    }
+
+    if (booksInCartCounter > 0) {
+        // console.log('in booksInCartCounter if')
+        booksInCartCount = booksInCartCounter
+        setBooksInCart()
+    }
+
+    const handleBookBtn = function() {
+        // return function() {
+            // console.log('in function()')
+            // console.log('this.innerHTML', this.innerHTML)
+            if (this.innerHTML === 'buy now') {
+                booksInCartCount++
+                // console.log('booksInCartCount++', booksInCartCount)
+                this.innerHTML = 'in the cart'
+                // console.log('in if 1')
+            } else {
+                booksInCartCount--
+                // console.log('booksInCartCount--', booksInCartCount)
+                this.innerHTML = 'buy now'
+                // console.log('in else 1')
             }
-            isFirstLoadig = false
-            fetchData(activeCategory, startIndex)
-            startIndex += 6
+            localStorage.setItem('booksInCartCount', booksInCartCount)
+            booksInCartCounter = localStorage.getItem('booksInCartCount')
+
+            console.log('booksInCartCount', booksInCartCount)
+            console.log('booksInCartCounter', booksInCartCounter)
+            if (booksInCartCounter > 0) {
+                setBooksInCart()
+                // console.log(booksCounter, booksCounter)
+                // console.log('in if 2')
+            } else {
+                booksCounter.classList.add('cart-hidden')
+                booksCounter.innerHTML = ''
+                // console.log('in else 2')
+            }
+
+            // console.log('booksInCartCount', booksInCartCount)
+            // return booksInCartCounter
+        // }
+    }
+
+    console.log('booksInCartCount', booksInCartCount)
+    console.log('booksInCartCounter', booksInCartCounter)
+
+    // const clickHandler = handleBookBtn.bind(this, item)
+    // const clickHandler = handleBookBtn()
+    let startIndex = 0
+
+    const handleBtnLoadMore = function() {
+        const activeCategory = catalog.querySelector('.active-category');
+        if (isFirstLoadig) {
+            startIndex = 6
+        }
+        isFirstLoadig = false
+        fetchData(activeCategory, startIndex)
+        startIndex += 6
+        btnBuyNow.forEach(item => {
+            item.removeEventListener('click', handleBookBtn)
+
         })
     }
 
-    loadMore()
+    function loadMore(btnBuyNow) {
 
+        btnLoadMore.addEventListener('click', handleBtnLoadMore , { once: true })
+    }
+
+    // loadMore()
 
 
     function waitForElement() {
         let observer = new MutationObserver(mutations => {
           mutations.forEach(() => {
-             btnBuyNow = catalog.querySelectorAll('.btn-buy-now');
+            btnBuyNow = catalog.querySelectorAll('.btn-buy-now');
+            // console.log('btnBuyNow', btnBuyNow.length)
             if (btnBuyNow) {
-            //   observer.disconnect();
               // делаем что-то с кнопкой
-            //   console.log('btnBuyNow', btnBuyNow)
+            //   console.log('MutationObserver')
+            loadMore(btnBuyNow)
             buyNow(btnBuyNow)
+
+            // return btnBuyNow
+            } else {
+                observer.disconnect()
             }
           });
         });
-      
-        observer.observe(books, { childList: true, subtree: true });
-      }
+        observer.observe(books, { childList: true });
+    }
 
-      waitForElement()
+    waitForElement()
 
-      function waitForSelectorOnce(selector) {
-        return (resolve) => {
-          let observer = null;
-          let checker = () => {
-            if (document.querySelector(selector)) {
-              observer && observer.disconnect();
-              resolve();
-              return true;
-            } else {
-              return false;
-            }
-          };
-      
-          // проверяем, может быть селектор сразу имеется на странице
-          // тогда и не надо инициализировать MutationObserver
-          if (!checker()) {
-            observer = new MutationObserver(checker);
-            observer.observe(document.documentElement, {
-              attributes: true,
-              childList: true,
-              subtree: true,
-            });
-          }
-        };
-      }
+
 
     function buyNow(btnBuyNow) {
-        // btnBuyNow = catalog.querySelectorAll('.btn-buy-now');
-        // console.log('btnBuyNow', btnBuyNow)
-        let booksInCartCount = 0
-        // const inTheCart = ``
-        btnBuyNow.forEach((item) => {
-            // let btnBuyNow = catalog.querySelectorAll('.btn-buy-now');
-            // console.log('btnBuyNow', btnBuyNow)
-            item.addEventListener('click', () => {
-                booksInCartCount++
-                console.log(booksInCartCount)
-                item.innerHTML = 'in the cart'
-            })
-        })
 
+        // console.log('btnBuyNow in f', btnBuyNow.length)
+
+        btnBuyNow.forEach((item) => {
+            // console.log('in forEach')
+            item.addEventListener('click', handleBookBtn)
+        })
     }
 
 
+    // const handleBookBtn = function(item, booksCounter) {
+    //     console.log('in forEach')
+    //     if (item.innerHTML === 'buy now') {
+    //         booksInCartCount++
+    //         console.log('booksInCartCount++', booksInCartCount)
+    //         item.innerHTML = 'in the cart'
+    //         console.log('in if 1')
+    //     } else {
+    //         booksInCartCount--
+    //         console.log('booksInCartCount--', booksInCartCount)
+    //         item.innerHTML = 'buy now'
+    //         console.log('in else 1')
+    //     }
+    //     if (booksInCartCount) {
+    //         booksCounter.classList.remove('cart-hidden')
+    //         booksCounter.innerHTML = booksInCartCount
+    //         // console.log(booksCounter, booksCounter)
+    //         console.log('in if 2')
+    //     } else {
+    //         booksCounter.classList.add('cart-hidden')
+    //         booksCounter.innerHTML = ''
+    //         console.log('in else 2')
+    //     }
+    //     console.log('booksInCartCount', booksInCartCount)
+    //     // return booksInCartCount
+    // }
 }
+
+// waitForElement()
+
+
+
+    // function waitForSelectorOnce(selector) {
+    //     return (resolve) => {
+    //       let observer = null;
+    //       let checker = () => {
+    //         if (catalog.querySelector(selector)) {
+    //           observer && observer.disconnect();
+    //           resolve();
+    //           return true;
+    //         } else {
+    //           return false;
+    //         }
+    //       };
+
+    //       // проверяем, может быть селектор сразу имеется на странице
+    //       // тогда и не надо инициализировать MutationObserver
+    //       if (!checker()) {
+    //         observer = new MutationObserver(checker);
+    //         observer.observe(document.documentElement, {
+    //           attributes: true,
+    //           childList: true,
+    //           subtree: true,
+    //         });
+    //       }
+    //     };
+    // }
+
+    // waitForSelectorOnce('.btn-buy-now')

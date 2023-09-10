@@ -45,3 +45,27 @@
 .user-area {
     @include column-gap40();
 }
+
+.user-area__cart {
+    position: relative;
+}
+
+.cart-count {
+    position: absolute;
+    bottom: -5px;
+    right: -4px;
+    width: 13px;
+    height: 13px;
+    background-color: #FF353A;
+    border-radius: 50%;
+    color: #FFF;
+    font-size: 10px;
+    font-weight: 500;
+    text-transform: capitalize;
+    text-align: center;
+    visibility: visible;
+}
+
+.cart-hidden {
+    visibility: hidden;
+}
