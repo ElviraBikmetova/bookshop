@@ -27,7 +27,7 @@ export function initCatalog() {
         items.forEach((item) => {
             const imagePlaceholderLink = require("../img/book-placeholder.jpeg")
             const cardBlock = `
-            <div class="books-card">
+            <div class="books-card" data-index=${item.id}>
                 <div class="books-card__image">
                     <img
                         src="${item.volumeInfo.imageLinks?.thumbnail || imagePlaceholderLink}"
@@ -57,14 +57,29 @@ export function initCatalog() {
         }
     }
 
+    const handleUserRequest = function() {
+        // console.log('in handleUserRequest')
+        isFirstLoadig = true
+        defaultRequest(this)
+        btnLoadMore.removeEventListener('click', handleBtnLoadMore , { once: true })
+        if (this.classList.contains("active-category")) {
+            this.removeEventListener('click', handleUserRequest)
+        }
+    }
+
     categories.forEach((item, index) => {
         item.dataset.index = categoriesSubject[index]
         userRequest(item)
     })
 
+    let activeCategory
+    // console.log('activeCategory', activeCategory)
+
     function setActiveCategory(item) {
-        const activeCategory = catalog.querySelector('.active-category');
+        activeCategory = catalog.querySelector('.active-category')
+        // console.log('activeCategory in f', activeCategory)
         if (activeCategory) {
+            // console.log('in if (activeCategory)')
             activeCategory.classList.remove("active-category")
         }
         item.classList.add("active-category")
@@ -77,12 +92,16 @@ export function initCatalog() {
 
     defaultRequest(categories[0])
 
+
+
     function userRequest(item) {
-        item.addEventListener('click', () => {
-            isFirstLoadig = true
-            defaultRequest(item)
-            btnLoadMore.removeEventListener('click', handleBtnLoadMore , { once: true })
-        })
+        // item.addEventListener('click', () => {
+        //     isFirstLoadig = true
+        //     defaultRequest(item)
+        //     btnLoadMore.removeEventListener('click', handleBtnLoadMore , { once: true })
+        // })
+        // console.log('in userRequest')
+        item.addEventListener('click', handleUserRequest)
 
     }
 
@@ -135,8 +154,8 @@ export function initCatalog() {
             localStorage.setItem('booksInCartCount', booksInCartCount)
             booksInCartCounter = localStorage.getItem('booksInCartCount')
 
-            console.log('booksInCartCount', booksInCartCount)
-            console.log('booksInCartCounter', booksInCartCounter)
+            // console.log('booksInCartCount', booksInCartCount)
+            // console.log('booksInCartCounter', booksInCartCounter)
             if (booksInCartCounter > 0) {
                 setBooksInCart()
                 // console.log(booksCounter, booksCounter)
@@ -152,15 +171,15 @@ export function initCatalog() {
         // }
     }
 
-    console.log('booksInCartCount', booksInCartCount)
-    console.log('booksInCartCounter', booksInCartCounter)
+    // console.log('booksInCartCount', booksInCartCount)
+    // console.log('booksInCartCounter', booksInCartCounter)
 
     // const clickHandler = handleBookBtn.bind(this, item)
     // const clickHandler = handleBookBtn()
     let startIndex = 0
 
     const handleBtnLoadMore = function() {
-        const activeCategory = catalog.querySelector('.active-category');
+        activeCategory = catalog.querySelector('.active-category');
         if (isFirstLoadig) {
             startIndex = 6
         }
