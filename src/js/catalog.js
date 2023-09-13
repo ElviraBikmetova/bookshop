@@ -8,6 +8,9 @@ export function initCatalog() {
     let books = catalog.querySelector('.books');
     let btnBuyNow
     const cart = document.querySelector('.user-area__cart')
+    let booksInTheCart = []
+    localStorage.setItem('booksInTheCart', JSON.stringify(booksInTheCart))
+    booksInTheCart = localStorage.getItem('booksInTheCart')
 
     async function fetchData(item, startIndex) {
         const key = process.env.API_KEY
@@ -27,7 +30,7 @@ export function initCatalog() {
         items.forEach((item) => {
             const imagePlaceholderLink = require("../img/book-placeholder.jpeg")
             const cardBlock = `
-            <div class="books-card" data-index=${item.id}>
+            <div class="books-card">
                 <div class="books-card__image">
                     <img
                         src="${item.volumeInfo.imageLinks?.thumbnail || imagePlaceholderLink}"
@@ -44,7 +47,7 @@ export function initCatalog() {
                         ${item.volumeInfo.description ?? ''}
                     </p>
                     <p>${item.saleInfo.retailPrice?.amount || ''}</p>
-                    <button class="btn btn-buy-now">buy now</button>
+                    <button class="btn btn-buy-now" data-index=${item.id}>${booksInTheCart.includes(item.id) ? 'in the cart' : 'buy now'}</button>
                 </div>
             </div>
           `;
@@ -140,31 +143,49 @@ export function initCatalog() {
         // return function() {
             // console.log('in function()')
             // console.log('this.innerHTML', this.innerHTML)
-            if (this.innerHTML === 'buy now') {
-                booksInCartCount++
-                // console.log('booksInCartCount++', booksInCartCount)
-                this.innerHTML = 'in the cart'
-                // console.log('in if 1')
-            } else {
-                booksInCartCount--
-                // console.log('booksInCartCount--', booksInCartCount)
-                this.innerHTML = 'buy now'
-                // console.log('in else 1')
-            }
-            localStorage.setItem('booksInCartCount', booksInCartCount)
-            booksInCartCounter = localStorage.getItem('booksInCartCount')
+            let bookId = this.dataset.index
+        if (booksInTheCart.indexOf(bookId) === -1) {
+            console.log('booksInTheCart', booksInTheCart)
+            booksInTheCart.push(bookId)
+            this.innerHTML = 'in the cart'
+        } else {
+            booksInTheCart.splice(booksInTheCart.indexOf(bookId), 1)
+            this.innerHTML = 'buy now'
+        }
 
-            // console.log('booksInCartCount', booksInCartCount)
-            // console.log('booksInCartCounter', booksInCartCounter)
-            if (booksInCartCounter > 0) {
-                setBooksInCart()
-                // console.log(booksCounter, booksCounter)
-                // console.log('in if 2')
-            } else {
-                booksCounter.classList.add('cart-hidden')
-                booksCounter.innerHTML = ''
-                // console.log('in else 2')
-            }
+        booksInCartCount = booksInTheCart.length
+
+            // if (this.innerHTML === 'buy now') {
+            //     console.log('this.dataset.index', this.dataset.index)
+            //     console.log('this', this)
+            //     booksInCartCount++
+            //     // console.log('booksInCartCount++', booksInCartCount)
+            //     this.innerHTML = 'in the cart'
+            //     // console.log('in if 1')
+            // } else {
+            //     booksInCartCount--
+            //     // console.log('booksInCartCount--', booksInCartCount)
+            //     this.innerHTML = 'buy now'
+            //     // console.log('in else 1')
+            // }
+
+        localStorage.setItem('booksInCartCount', booksInCartCount)
+        booksInCartCounter = localStorage.getItem('booksInCartCount')
+
+        localStorage.setItem('booksInTheCart', JSON.stringify(booksInTheCart))
+        // booksInTheCart = localStorage.getItem('booksInTheCart')
+
+        // console.log('booksInCartCount', booksInCartCount)
+        // console.log('booksInCartCounter', booksInCartCounter)
+        if (booksInCartCounter > 0) {
+            setBooksInCart()
+            // console.log(booksCounter, booksCounter)
+            // console.log('in if 2')
+        } else {
+            booksCounter.classList.add('cart-hidden')
+            booksCounter.innerHTML = ''
+            // console.log('in else 2')
+        }
 
             // console.log('booksInCartCount', booksInCartCount)
             // return booksInCartCounter
