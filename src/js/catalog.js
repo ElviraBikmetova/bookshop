@@ -8,9 +8,19 @@ export function initCatalog() {
     let books = catalog.querySelector('.books');
     let btnBuyNow
     const cart = document.querySelector('.user-area__cart')
-    let booksInTheCart = []
-    localStorage.setItem('booksInTheCart', JSON.stringify(booksInTheCart))
-    booksInTheCart = localStorage.getItem('booksInTheCart')
+    // let booksInTheCart = []
+    let booksInTheCart = JSON.parse(localStorage.getItem('booksInTheCart'))
+    // console.log('booksInTheCart', booksInTheCart)
+    if (booksInTheCart?.length) {
+        // console.log('in if')
+        localStorage.setItem('booksInTheCart', JSON.stringify(booksInTheCart))
+    } else {
+        // console.log('in else')
+        localStorage.setItem('booksInTheCart', JSON.stringify([]))
+    }
+    booksInTheCart = JSON.parse(localStorage.getItem('booksInTheCart'))
+    // console.log('booksInTheCart', booksInTheCart)
+
 
     async function fetchData(item, startIndex) {
         const key = process.env.API_KEY
@@ -63,10 +73,11 @@ export function initCatalog() {
     const handleUserRequest = function() {
         // console.log('in handleUserRequest')
         isFirstLoadig = true
-        defaultRequest(this)
+        // defaultRequest(this)
         btnLoadMore.removeEventListener('click', handleBtnLoadMore , { once: true })
-        if (this.classList.contains("active-category")) {
-            this.removeEventListener('click', handleUserRequest)
+        if (!this.classList.contains("active-category")) {
+            // this.removeEventListener('click', handleUserRequest)
+            defaultRequest(this)
         }
     }
 
@@ -124,18 +135,19 @@ export function initCatalog() {
 
     cart.insertAdjacentHTML('beforeend', '<div class="cart-count cart-hidden"></div>')
     const booksCounter = cart.querySelector('.cart-count')
-    let booksInCartCount = 0
-    let booksInCartCounter = localStorage.getItem('booksInCartCount')
+    let booksInCartCount = booksInTheCart.length
+    // let booksInCartCounter = localStorage.getItem('booksInCartCount')
     // console.log('booksInCartCounter', booksInCartCounter)
+    // console.log('booksInCartCount', booksInCartCount)
 
     function setBooksInCart() {
         booksCounter.classList.remove('cart-hidden')
-        booksCounter.innerHTML = booksInCartCounter
+        booksCounter.innerHTML = booksInCartCount
     }
 
-    if (booksInCartCounter > 0) {
+    if (booksInCartCount > 0) {
         // console.log('in booksInCartCounter if')
-        booksInCartCount = booksInCartCounter
+        // booksInCartCount = booksInCartCounter
         setBooksInCart()
     }
 
@@ -145,7 +157,7 @@ export function initCatalog() {
             // console.log('this.innerHTML', this.innerHTML)
             let bookId = this.dataset.index
         if (booksInTheCart.indexOf(bookId) === -1) {
-            console.log('booksInTheCart', booksInTheCart)
+            // console.log('booksInTheCart', booksInTheCart)
             booksInTheCart.push(bookId)
             this.innerHTML = 'in the cart'
         } else {
@@ -169,15 +181,15 @@ export function initCatalog() {
             //     // console.log('in else 1')
             // }
 
-        localStorage.setItem('booksInCartCount', booksInCartCount)
-        booksInCartCounter = localStorage.getItem('booksInCartCount')
+        // localStorage.setItem('booksInCartCount', booksInCartCount)
+        // booksInCartCounter = localStorage.getItem('booksInCartCount')
 
         localStorage.setItem('booksInTheCart', JSON.stringify(booksInTheCart))
         // booksInTheCart = localStorage.getItem('booksInTheCart')
 
         // console.log('booksInCartCount', booksInCartCount)
         // console.log('booksInCartCounter', booksInCartCounter)
-        if (booksInCartCounter > 0) {
+        if (booksInCartCount > 0) {
             setBooksInCart()
             // console.log(booksCounter, booksCounter)
             // console.log('in if 2')
