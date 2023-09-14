@@ -87,16 +87,31 @@ padding-bottom: 74px;
 
 .books-card__text {
     width: 176px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.books-card__header {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
 }
 
 .books-card__gray-text {
     color: $base-gray;
     font-family: Open Sans, sans-serif;
     font-size: 10px;
+    // text-transform: capitalize;
+}
+
+.books-card__title {
+    font-weight: 700;
 }
 
 .books-card__rating {
     display: flex;
+    gap: 6px;
 }
 
 .books-card__description {

@@ -47,17 +47,21 @@ export function initCatalog() {
                     />
                 </div>
                 <div class="books-card__text">
-                    <p class="books-card__gray-text">${item.volumeInfo.authors ?? ''}</p>
-                    <p>${item.volumeInfo.title ?? ''}</p>
-                    <div class="books-card__rating">
-                        <p>${item.volumeInfo.averageRating ?? ''}</p>
-                        <p class="books-card__gray-text">${item.volumeInfo.ratingsCount ?? ''}</p>
+                    <div class="books-card__header">
+                        <p class="books-card__gray-text">${item.volumeInfo.authors?.join(', ') ?? ''}</p>
+                        <p class="books-card__title">${item.volumeInfo.title ?? ''}</p>
+                        <div class="books-card__rating">
+                            <p>${item.volumeInfo.averageRating ?? ''}</p>
+                            <p class="books-card__gray-text">${item.volumeInfo.ratingsCount ? item.volumeInfo.ratingsCount + ' review' : ''}</p>
+                        </div>
                     </div>
                     <p class="books-card__gray-text books-card__description">
                         ${item.volumeInfo.description ?? ''}
                     </p>
                     <p>${item.saleInfo.retailPrice?.amount || ''}</p>
-                    <button class="btn btn-buy-now" data-index=${item.id}>${booksInTheCart.includes(item.id) ? 'in the cart' : 'buy now'}</button>
+                    <button class="btn btn-buy-now" data-index=${item.id}>
+                        ${booksInTheCart.includes(item.id) ? 'in the cart' : 'buy now'}
+                    </button>
                 </div>
             </div>
           `;
