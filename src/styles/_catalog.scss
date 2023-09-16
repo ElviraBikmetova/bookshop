@@ -192,6 +192,14 @@ padding-bottom: 74px;
     align-items: center;
     justify-content: center;
     background: #fff;
+    &:hover {
+        background: #EEEDF5;
+    }
+}
+
+.in-the-cart {
+    border-color: #EEEDF5;
+    color: $base-gray;
 }
 
 .btn-load-more {

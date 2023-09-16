@@ -79,7 +79,7 @@ export function initCatalog() {
                         ${item.volumeInfo.description ?? ''}
                     </p>
                     <p class="books-card__price">${item.saleInfo.retailPrice?.amount ? '₽' + item.saleInfo.retailPrice?.amount : ''}</p>
-                    <button class="btn btn-buy-now" data-index=${item.id}>
+                    <button class="btn btn-buy-now ${booksInTheCart.includes(item.id) && 'in-the-cart'}" data-index=${item.id}>
                         ${booksInTheCart.includes(item.id) ? 'in the cart' : 'buy now'}
                     </button>
                 </div>
@@ -183,12 +183,14 @@ export function initCatalog() {
         if (booksInTheCart.indexOf(bookId) === -1) {
             // console.log('booksInTheCart', booksInTheCart)
             booksInTheCart.push(bookId)
+            // this.classList.add('in-the-cart')
             this.innerHTML = 'in the cart'
         } else {
             booksInTheCart.splice(booksInTheCart.indexOf(bookId), 1)
+            // this.classList.remove('in-the-cart')
             this.innerHTML = 'buy now'
         }
-
+        this.classList.toggle('in-the-cart')
         booksInCartCount = booksInTheCart.length
 
             // if (this.innerHTML === 'buy now') {
