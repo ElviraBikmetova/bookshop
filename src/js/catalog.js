@@ -26,7 +26,7 @@ export function initCatalog() {
     async function fetchData(item, startIndex) {
         const key = process.env.API_KEY
         try {
-            const response = await fetch(`https://www.googleapis.com/books/v1/volumes?q="subject:${item.dataset.index}"&key=${key}&printType=books&startIndex=${startIndex}&maxResults=6&langRestrict=en`);
+            const response = await fetch(`https://www.googleapis.com/books/v1/volumes?q="subject:${item.dataset.index}"&key=${key}&printType=books&startIndex=${startIndex}&maxResults=6`);
             const result = await response.json();
             const items = result.items
             createBookCardBlock(items)
@@ -42,6 +42,7 @@ export function initCatalog() {
             // console.log('rating', item.volumeInfo.averageRating)
             const imagePlaceholderLink = require("../img/book-placeholder.jpeg")
             const rating = item.volumeInfo.averageRating
+            const ratingsCount = item.volumeInfo.ratingsCount
             const cardBlock = `
             <div class="books-card">
                 <div class="books-card__image">
@@ -51,7 +52,7 @@ export function initCatalog() {
                 </div>
                 <div class="books-card__text">
                     <div class="books-card__header">
-                        <p class="books-card__gray-text">${item.volumeInfo.authors?.join(', ') ?? ''}</p>
+                        <p class="books-card__authors books-card__gray-text">${item.volumeInfo.authors?.join(', ') ?? ''}</p>
                         <p class="books-card__title">${item.volumeInfo.title ?? ''}</p>
                         <div class="books-card__rating">
                         ${rating
@@ -68,7 +69,7 @@ export function initCatalog() {
                                 </div>
                             </form>
                             <p class="books-card__gray-text">
-                                ${item.volumeInfo.ratingsCount ? item.volumeInfo.ratingsCount + ' review' : ''}
+                                ${ratingsCount ? ratingsCount + ' review' : ''}
                             </p>`
                             : ''
                         }
@@ -77,7 +78,7 @@ export function initCatalog() {
                     <p class="books-card__gray-text books-card__description">
                         ${item.volumeInfo.description ?? ''}
                     </p>
-                    <p>${item.saleInfo.retailPrice?.amount || ''}</p>
+                    <p class="books-card__price">${item.saleInfo.retailPrice?.amount ? '₽' + item.saleInfo.retailPrice?.amount : ''}</p>
                     <button class="btn btn-buy-now" data-index=${item.id}>
                         ${booksInTheCart.includes(item.id) ? 'in the cart' : 'buy now'}
                     </button>
@@ -260,6 +261,8 @@ export function initCatalog() {
         let observer = new MutationObserver(mutations => {
           mutations.forEach(() => {
             btnBuyNow = catalog.querySelectorAll('.btn-buy-now');
+            const description = catalog.querySelectorAll('.books-card__description');
+            const title = catalog.querySelectorAll('.books-card__title');
             // console.log('btnBuyNow', btnBuyNow.length)
             if (btnBuyNow) {
               // делаем что-то с кнопкой
@@ -267,6 +270,8 @@ export function initCatalog() {
             loadMore(btnBuyNow)
             buyNow(btnBuyNow)
             starRating()
+            truncateText(description)
+            // truncateText(title)
             // return btnBuyNow
             } else {
                 observer.disconnect()
@@ -287,6 +292,26 @@ export function initCatalog() {
         btnBuyNow.forEach((item) => {
             // console.log('in forEach')
             item.addEventListener('click', handleBookBtn)
+        })
+    }
+
+    function truncateText (elems) {
+        let text
+        elems.forEach(item => {
+            // console.log('clientHeight', item.clientHeight)
+            // console.log('scrollHeight', item.scrollHeight)
+            text = item.innerHTML.trim()
+            // console.log('arr', text.split(' '))
+
+            while(item.clientHeight < item.scrollHeight) {
+                text = item.innerHTML.trim()
+                // console.log('arr', text.split(' '))
+
+                if (text.split(' ').length <= 1) {
+                  break;
+                }
+                item.innerHTML = text.replace(/\W*\s(\S)*$/, '...')
+              }
         })
     }
 

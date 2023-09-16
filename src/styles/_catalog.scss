@@ -102,11 +102,22 @@ padding-bottom: 74px;
     color: $base-gray;
     font-family: Open Sans, sans-serif;
     font-size: 10px;
-    // text-transform: capitalize;
+
+}
+
+.books-card__authors {
+    text-transform: capitalize;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .books-card__title {
     font-weight: 700;
+    // white-space: nowrap;
+    // overflow: hidden;
+    // text-overflow: ellipsis;
+    // height: 40px;
 }
 
 .books-card__rating {
@@ -162,6 +173,11 @@ padding-bottom: 74px;
     height: 42px;
     overflow: hidden;
     text-transform: capitalize;
+}
+
+.books-card__price {
+    font-size: 13px;
+    font-weight: 700;
 }
 
 .btn {
