@@ -1,3 +1,4 @@
+import { starRating } from "./starRating";
 
 export function initCatalog() {
     const catalog = document.querySelector('.catalog');
@@ -38,7 +39,9 @@ export function initCatalog() {
 
         let cards = '';
         items.forEach((item) => {
+            // console.log('rating', item.volumeInfo.averageRating)
             const imagePlaceholderLink = require("../img/book-placeholder.jpeg")
+            const rating = item.volumeInfo.averageRating
             const cardBlock = `
             <div class="books-card">
                 <div class="books-card__image">
@@ -51,8 +54,24 @@ export function initCatalog() {
                         <p class="books-card__gray-text">${item.volumeInfo.authors?.join(', ') ?? ''}</p>
                         <p class="books-card__title">${item.volumeInfo.title ?? ''}</p>
                         <div class="books-card__rating">
-                            <p>${item.volumeInfo.averageRating ?? ''}</p>
-                            <p class="books-card__gray-text">${item.volumeInfo.ratingsCount ? item.volumeInfo.ratingsCount + ' review' : ''}</p>
+                        ${rating
+                            ?
+                            `<form class="rating" data-index=${rating}>
+                                <p class="rating__value" style="display:none">${item.volumeInfo.averageRating ?? ''}</p>
+                                <div class="rating__active"></div>
+                                <div class="rating__items">
+                                    <input type="radio" class="raitin__item" value="1" name="rating">
+                                    <input type="radio" class="raitin__item" value="2" name="rating">
+                                    <input type="radio" class="raitin__item" value="3" name="rating">
+                                    <input type="radio" class="raitin__item" value="4" name="rating">
+                                    <input type="radio" class="raitin__item" value="5" name="rating">
+                                </div>
+                            </form>
+                            <p class="books-card__gray-text">
+                                ${item.volumeInfo.ratingsCount ? item.volumeInfo.ratingsCount + ' review' : ''}
+                            </p>`
+                            : ''
+                        }
                         </div>
                     </div>
                     <p class="books-card__gray-text books-card__description">
@@ -247,7 +266,7 @@ export function initCatalog() {
             //   console.log('MutationObserver')
             loadMore(btnBuyNow)
             buyNow(btnBuyNow)
-
+            starRating()
             // return btnBuyNow
             } else {
                 observer.disconnect()
