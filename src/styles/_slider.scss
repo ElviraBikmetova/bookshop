@@ -28,25 +28,24 @@
   }
   .slider__images {
     position: relative;
-    width: 1120px;
+    max-width: 1120px;
     height: 702px;
-  }
-  .slider__images {
     .image {
-        background-size: cover;
-        background-position: center center;
-        width: 100%;
-        height: 100%;
-        position: absolute;
-        left: 0;
-        top: 0;
-        opacity: 0;
-        transition: opacity 800ms ease;
-        &.active{
-            opacity: 1;
-          }
-      }
+      background-size: cover;
+      background-position: center center;
+      width: 100%;
+      height: 100%;
+      position: absolute;
+      left: 0;
+      top: 0;
+      opacity: 0;
+      transition: opacity 800ms ease;
+      &.active{
+          opacity: 1;
+        }
+    }
   }
+
   .slider__dots {
     display: flex;
     justify-content: center;
@@ -70,15 +69,71 @@
 
   .card-link1 {
     @include card-link(149px, 204px, -86px, #9E98DC);
-    top: 198px;
+    // top: 198px;
+    top: 24.2%;
     &:hover {
       background-color: #afa9f4;
     }
   }
   .card-link2 {
     @include card-link(158px, 273px, -158px - 23px, #FF8FE6);
-    bottom: 54px;
+    // bottom: 54px;
+    bottom: 6.6%;
     &:hover {
       background-color: #ffa6ec;
     }
   }
+
+@media (max-width: 1150px) {
+  .slider__images {
+    height: 502px;
+  }
+  .card-link1 {
+    width: 110px;
+    height: 160px;
+    right: -10px;
+  }
+  .card-link2 {
+    width: 110px;
+    height: 150px;
+    right: -20px;
+  }
+}
+
+@media (max-width: 900px) {
+  .slider__images {
+    height: 302px;
+  }
+  .card-link1, .card-link2  {
+    font-size: 12px;
+  }
+  .card-link1 {
+    width: 90px;
+    height: 120px;
+    top: 30%;
+  }
+  .card-link2 {
+    width: 80px;
+    height: 110px;
+  }
+}
+
+@media (max-width: 600px) {
+  .slider__images {
+    height: 202px;
+  }
+  .card-link1, .card-link2  {
+    font-size: 10px;
+    padding: 10px;
+  }
+  .card-link1 {
+    width: 70px;
+    height: 90px;
+    top: 40%;
+  }
+  .card-link2 {
+    width: 70px;
+    height: 90px;
+    bottom: 3%;
+  }
+}

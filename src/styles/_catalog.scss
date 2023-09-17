@@ -49,7 +49,7 @@ padding-bottom: 74px;
                 position: absolute;
                 content: '';
                 top: 6px;
-                left: -20px;
+                left: -14px;
                 width: 6px;
                 height: 6px;
                 background: #756AD3;
@@ -207,3 +207,20 @@ padding-bottom: 74px;
     visibility: hidden;
 }
 
+@media (max-width: 1200px) {
+    .books {
+        gap: 20px;
+        justify-content: center;
+    }
+
+    .books-card {
+        column-gap: 5px;
+    }
+}
+
+@media (max-width: 600px) {
+    .books-card__image {
+        width: 130px;
+        height: 250px;
+    }
+  }

@@ -4,29 +4,35 @@
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-  }
-  body {
-    font-weight: normal;
-    font-size: 16px;
-    font-family: 'Montserrat', sans-serif;
-    font-style: normal;
-    overflow-x: hidden;
-    color: $base-black;
-  }
-  img {
-    display: inline-block;
-    max-width: 100%;
-    height: auto;
-    vertical-align: middle;
-  }
+}
+
+body {
+  font-weight: normal;
+  font-size: 16px;
+  font-family: 'Montserrat', sans-serif;
+  font-style: normal;
+  overflow-x: hidden;
+  color: $base-black;
+  // margin: 0 auto;
+}
+
+img {
+  display: inline-block;
+  max-width: 100%;
+  height: auto;
+  vertical-align: middle;
+}
+
 a {
     text-decoration: none;
     cursor: pointer;
     color: $base-black;
 }
+
 button {
     cursor: pointer;
 }
+
 li {
     list-style-type: none;
 }
@@ -36,4 +42,22 @@ li {
     margin: 0 auto;
     width: 100%;
     padding: 0 15px;
+}
+
+@media (max-width: 1150px) {
+  .container {
+    max-width: 900px;
   }
+}
+
+@media (max-width: 900px) {
+  .container {
+    max-width: 600px;
+  }
+}
+
+@media (max-width: 600px) {
+  .container {
+    max-width: 400px;
+  }
+}
