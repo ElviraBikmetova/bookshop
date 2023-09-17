@@ -71,8 +71,14 @@
   .card-link1 {
     @include card-link(149px, 204px, -86px, #9E98DC);
     top: 198px;
+    &:hover {
+      background-color: #afa9f4;
+    }
   }
   .card-link2 {
     @include card-link(158px, 273px, -158px - 23px, #FF8FE6);
     bottom: 54px;
+    &:hover {
+      background-color: #ffa6ec;
+    }
   }

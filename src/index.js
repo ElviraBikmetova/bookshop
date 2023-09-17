@@ -1,8 +1,6 @@
-// require('dotenv').load();
-
 import './style.scss';
 import {images, initSlider} from './js/slider';
-import { initCatalog, firstCategoryRequest, anotherCategoryRequest } from './js/catalog';
+import { initCatalog } from './js/catalog';
 
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -13,6 +11,4 @@ document.addEventListener("DOMContentLoaded", () => {
     }
     initSlider(images, sliderOptions);
     initCatalog()
-    // firstCategoryRequest()
-    // anotherCategoryRequest()
   });

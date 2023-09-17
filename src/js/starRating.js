@@ -1,5 +1,4 @@
 
-
 export function starRating() {
     const ratings = document.querySelectorAll('.rating')
     if (ratings.length > 0) {
@@ -25,7 +24,6 @@ export function starRating() {
         function initRatingVars(rating) {
             ratingActive = rating.querySelector('.rating__active')
             ratingValue = rating.dataset.index
-            // console.log('ratingValue', ratingValue)
         }
 
         // Изменяем ширину активных звезд

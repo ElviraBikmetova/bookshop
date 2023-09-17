@@ -1,28 +1,37 @@
 import { starRating } from "./starRating";
+import { truncateText } from "./truncateText";
 
 export function initCatalog() {
-    const catalog = document.querySelector('.catalog');
-    const categories = catalog.querySelectorAll('.categories-nav__item');
+    // Список категорий книг для запроса
     const categoriesSubject = ['Architecture', 'Art', 'Biography & Autobiography', 'Business', 'Crafts & Hobbies', 'Drama', 'Fiction', 'Cooking', 'Health & Fitness', 'History', 'Humor', 'Poetry', 'Psychology', 'Science', 'Technology', 'Travel']
-    let isFirstLoadig = true
-    const btnLoadMore = catalog.querySelector('.btn-load-more');
-    let books = catalog.querySelector('.books');
-    let btnBuyNow
+
+    const catalog = document.querySelector('.catalog')
+    const categories = catalog.querySelectorAll('.categories-nav__item')
+    const books = catalog.querySelector('.books')
     const cart = document.querySelector('.user-area__cart')
-    // let booksInTheCart = []
+    const btnLoadMore = catalog.querySelector('.btn-load-more')
+
+    let isFirstLoadig = true
+    let btnBuyNow
+    let activeCategory
+    let startIndex = 0
+
+    // Если в корзине в локальном хранилище есть книги, то они добавляются в переменую booksInTheCart, если их нет, то в локальное хранилище добавляется пустой массив
     let booksInTheCart = JSON.parse(localStorage.getItem('booksInTheCart'))
-    // console.log('booksInTheCart', booksInTheCart)
     if (booksInTheCart?.length) {
-        // console.log('in if')
         localStorage.setItem('booksInTheCart', JSON.stringify(booksInTheCart))
     } else {
-        // console.log('in else')
         localStorage.setItem('booksInTheCart', JSON.stringify([]))
     }
     booksInTheCart = JSON.parse(localStorage.getItem('booksInTheCart'))
-    // console.log('booksInTheCart', booksInTheCart)
 
+    // Создаем счетчик книг в корзине
+    cart.insertAdjacentHTML('beforeend', '<div class="cart-count cart-hidden"></div>')
+    const booksCounter = cart.querySelector('.cart-count')
+    // Переменная отражающая количество книг в корзине, берется как длина массива переменной booksInTheCart, в которую записываются книги попадающие в корзину
+    let booksInCartCount = booksInTheCart.length
 
+    // Асинхронная функция запроса на сервер для получения 6 книг по заданной категории с исплользованием google api key
     async function fetchData(item, startIndex) {
         const key = process.env.API_KEY
         try {
@@ -31,15 +40,14 @@ export function initCatalog() {
             const items = result.items
             createBookCardBlock(items)
         } catch {
-            console.log('error');
+            console.log('error')
         }
     }
 
+    // Функция для создания карточки книги
     function createBookCardBlock(items) {
-
         let cards = '';
         items.forEach((item) => {
-            // console.log('rating', item.volumeInfo.averageRating)
             const imagePlaceholderLink = require("../img/book-placeholder.jpeg")
             const rating = item.volumeInfo.averageRating
             const ratingsCount = item.volumeInfo.ratingsCount
@@ -84,296 +92,150 @@ export function initCatalog() {
                     </button>
                 </div>
             </div>
-          `;
-          cards = cards + cardBlock;
+          `
+          cards = cards + cardBlock
         })
+        // Если это первая загрузка категории, то список книг перезаписыватся, если это последующая загрузка книг в той же категории, то новые книги добавляются в конец списка
         if (isFirstLoadig) {
             books.innerHTML = cards
         } else {
             books.insertAdjacentHTML('beforeend', cards)
         }
+        btnLoadMore.style.visibility = 'visible'
     }
 
+    // Функция обработчика события загрузки книг пользователем
     const handleUserRequest = function() {
-        // console.log('in handleUserRequest')
         isFirstLoadig = true
-        // defaultRequest(this)
+        // Удаляем обработчик событий на кнопке 'Load More', т.к. при каждом клике на категорию книги, добавляется еще один обработчик на кнопку 'Load More'
         btnLoadMore.removeEventListener('click', handleBtnLoadMore , { once: true })
+        // Для предотвращения повторного запроса одной и той же категории, сначала проверяем, что находимся не на активной категории и только в этом случае делаем запрос
         if (!this.classList.contains("active-category")) {
-            // this.removeEventListener('click', handleUserRequest)
             defaultRequest(this)
         }
     }
 
+    // Вешаем обработчик клика для загрузки книг по выбранной категории пользователем
+    function userRequest(item) {
+        item.addEventListener('click', handleUserRequest)
+    }
+
+    // Присваиваем каждой категории ее название в атрибут data-index, для использования его в запросах и активируем функцию обработчика клика
     categories.forEach((item, index) => {
         item.dataset.index = categoriesSubject[index]
         userRequest(item)
     })
 
-    let activeCategory
-    // console.log('activeCategory', activeCategory)
-
+    // Для выбранной категории проставляет класс "active-category", а для предыдущей активной - убирает
     function setActiveCategory(item) {
         activeCategory = catalog.querySelector('.active-category')
-        // console.log('activeCategory in f', activeCategory)
         if (activeCategory) {
-            // console.log('in if (activeCategory)')
             activeCategory.classList.remove("active-category")
         }
         item.classList.add("active-category")
     }
 
+    // Функция запроса по умолчанию, активирует функции запроса на сервер и изменения активной категории
     function defaultRequest(item) {
         fetchData(item, 0)
         setActiveCategory(item)
     }
 
+    // Запускаем функцию запроса на сервер по умолчанию, для певрой категории книг
     defaultRequest(categories[0])
 
-
-
-    function userRequest(item) {
-        // item.addEventListener('click', () => {
-        //     isFirstLoadig = true
-        //     defaultRequest(item)
-        //     btnLoadMore.removeEventListener('click', handleBtnLoadMore , { once: true })
-        // })
-        // console.log('in userRequest')
-        item.addEventListener('click', handleUserRequest)
-
-    }
-
-    // function loadMore() {
-    //     let startIndex = 0
-    //     btnLoadMore.addEventListener('click', () => {
-    //         const activeCategory = catalog.querySelector('.active-category');
-    //         if (isFirstLoadig) {
-    //             startIndex = 6
-    //         }
-    //         isFirstLoadig = false
-    //         fetchData(activeCategory, startIndex)
-    //         startIndex += 6
-    //     })
-    // }
-
-
-    cart.insertAdjacentHTML('beforeend', '<div class="cart-count cart-hidden"></div>')
-    const booksCounter = cart.querySelector('.cart-count')
-    let booksInCartCount = booksInTheCart.length
-    // let booksInCartCounter = localStorage.getItem('booksInCartCount')
-    // console.log('booksInCartCounter', booksInCartCounter)
-    // console.log('booksInCartCount', booksInCartCount)
-
+    // Функция, которая показывает количство книг в корзине
     function setBooksInCart() {
         booksCounter.classList.remove('cart-hidden')
         booksCounter.innerHTML = booksInCartCount
     }
 
+    // Если переменная отражающая количесвто книг в корзине больше 0, то запускается функция, которая показывает количство книг в корзине
     if (booksInCartCount > 0) {
-        // console.log('in booksInCartCounter if')
-        // booksInCartCount = booksInCartCounter
         setBooksInCart()
     }
 
+    // Функция обработчик клика по кнопке книгы добавления/удаления ее из корзины
     const handleBookBtn = function() {
-        // return function() {
-            // console.log('in function()')
-            // console.log('this.innerHTML', this.innerHTML)
-            let bookId = this.dataset.index
+        // Получаем уникальный id книги из атрибута data-index
+        let bookId = this.dataset.index
+        // Если книги нет в корзине (массиве booksInTheCart), то она добавляется в конец массива, а текст кнопки изменяется на 'in the cart'. Если книга уже есть в корзине, то она удаляется из массива и текст кнопки изменяется на 'buy now'.
         if (booksInTheCart.indexOf(bookId) === -1) {
-            // console.log('booksInTheCart', booksInTheCart)
             booksInTheCart.push(bookId)
-            // this.classList.add('in-the-cart')
             this.innerHTML = 'in the cart'
         } else {
             booksInTheCart.splice(booksInTheCart.indexOf(bookId), 1)
-            // this.classList.remove('in-the-cart')
             this.innerHTML = 'buy now'
         }
+        // добавляем/удаляем стили для кнопки в зависимости от того находится книга в корзине или нет
         this.classList.toggle('in-the-cart')
+        // присваиваем счетчику книг в корзине длину массива с книгами в корзине
         booksInCartCount = booksInTheCart.length
-
-            // if (this.innerHTML === 'buy now') {
-            //     console.log('this.dataset.index', this.dataset.index)
-            //     console.log('this', this)
-            //     booksInCartCount++
-            //     // console.log('booksInCartCount++', booksInCartCount)
-            //     this.innerHTML = 'in the cart'
-            //     // console.log('in if 1')
-            // } else {
-            //     booksInCartCount--
-            //     // console.log('booksInCartCount--', booksInCartCount)
-            //     this.innerHTML = 'buy now'
-            //     // console.log('in else 1')
-            // }
-
-        // localStorage.setItem('booksInCartCount', booksInCartCount)
-        // booksInCartCounter = localStorage.getItem('booksInCartCount')
-
+        // записываем обновленный массив с книгами в корзине в локальное хранилище
         localStorage.setItem('booksInTheCart', JSON.stringify(booksInTheCart))
-        // booksInTheCart = localStorage.getItem('booksInTheCart')
-
-        // console.log('booksInCartCount', booksInCartCount)
-        // console.log('booksInCartCounter', booksInCartCounter)
+        // Если количество книг в корзине больше нуля, то вызываем функцию, которая показывает количство книг в корзине, если в корзине нет книг, то скрываем счетчик книг в корзине
         if (booksInCartCount > 0) {
             setBooksInCart()
-            // console.log(booksCounter, booksCounter)
-            // console.log('in if 2')
         } else {
             booksCounter.classList.add('cart-hidden')
             booksCounter.innerHTML = ''
-            // console.log('in else 2')
         }
-
-            // console.log('booksInCartCount', booksInCartCount)
-            // return booksInCartCounter
-        // }
     }
 
-    // console.log('booksInCartCount', booksInCartCount)
-    // console.log('booksInCartCounter', booksInCartCounter)
-
-    // const clickHandler = handleBookBtn.bind(this, item)
-    // const clickHandler = handleBookBtn()
-    let startIndex = 0
-
-    const handleBtnLoadMore = function() {
-        activeCategory = catalog.querySelector('.active-category');
-        if (isFirstLoadig) {
-            startIndex = 6
-        }
-        isFirstLoadig = false
-        fetchData(activeCategory, startIndex)
-        startIndex += 6
-        btnBuyNow.forEach(item => {
-            item.removeEventListener('click', handleBookBtn)
-
-        })
-    }
-
-    function loadMore(btnBuyNow) {
-
-        btnLoadMore.addEventListener('click', handleBtnLoadMore , { once: true })
-    }
-
-    // loadMore()
-
-
-    function waitForElement() {
-        let observer = new MutationObserver(mutations => {
-          mutations.forEach(() => {
-            btnBuyNow = catalog.querySelectorAll('.btn-buy-now');
-            const description = catalog.querySelectorAll('.books-card__description');
-            const title = catalog.querySelectorAll('.books-card__title');
-            // console.log('btnBuyNow', btnBuyNow.length)
-            if (btnBuyNow) {
-              // делаем что-то с кнопкой
-            //   console.log('MutationObserver')
-            loadMore(btnBuyNow)
-            buyNow(btnBuyNow)
-            starRating()
-            truncateText(description)
-            // truncateText(title)
-            // return btnBuyNow
-            } else {
-                observer.disconnect()
-            }
-          });
-        });
-        observer.observe(books, { childList: true });
-    }
-
-    waitForElement()
-
-
-
+    // Функция, которая вешает обработчик клика на кнопки книг 'Buy Now'
     function buyNow(btnBuyNow) {
-
-        // console.log('btnBuyNow in f', btnBuyNow.length)
-
         btnBuyNow.forEach((item) => {
-            // console.log('in forEach')
             item.addEventListener('click', handleBookBtn)
         })
     }
 
-    function truncateText (elems) {
-        let text
-        elems.forEach(item => {
-            // console.log('clientHeight', item.clientHeight)
-            // console.log('scrollHeight', item.scrollHeight)
-            text = item.innerHTML.trim()
-            // console.log('arr', text.split(' '))
-
-            while(item.clientHeight < item.scrollHeight) {
-                text = item.innerHTML.trim()
-                // console.log('arr', text.split(' '))
-
-                if (text.split(' ').length <= 1) {
-                  break;
-                }
-                item.innerHTML = text.replace(/\W*\s(\S)*$/, '...')
-              }
+    // Функция обработчик клика кнопки допольнительной загрузки книг в текущей категории 'Load More'
+    const handleBtnLoadMore = function() {
+        activeCategory = catalog.querySelector('.active-category')
+        // Если была первая загрузка категории, то дополнительная загрузка книг начинается с 6 книги
+        if (isFirstLoadig) {
+            startIndex = 6
+        }
+        // Передаем false переменной первой загрузки категории
+        isFirstLoadig = false
+        // запускаем функцию запроса
+        fetchData(activeCategory, startIndex)
+        // увеличиваем начальный индекс, с которой будет начинаться следующая допольнительная загрузка книг
+        startIndex += 6
+        // удаляем обработчик события с кнопки книг 'Buy Now', т.к. при каждом клике на кнопку допольнительной загрузки книг 'Load More', добавляется еще один обработчик на кнопку 'Buy Now'
+        btnBuyNow.forEach(item => {
+            item.removeEventListener('click', handleBookBtn)
         })
     }
 
+    // Вешаем обработчик клинка на кнопку 'Load More'
+    function loadMore(btnBuyNow) {
+        btnLoadMore.addEventListener('click', handleBtnLoadMore , { once: true })
+    }
 
-    // const handleBookBtn = function(item, booksCounter) {
-    //     console.log('in forEach')
-    //     if (item.innerHTML === 'buy now') {
-    //         booksInCartCount++
-    //         console.log('booksInCartCount++', booksInCartCount)
-    //         item.innerHTML = 'in the cart'
-    //         console.log('in if 1')
-    //     } else {
-    //         booksInCartCount--
-    //         console.log('booksInCartCount--', booksInCartCount)
-    //         item.innerHTML = 'buy now'
-    //         console.log('in else 1')
-    //     }
-    //     if (booksInCartCount) {
-    //         booksCounter.classList.remove('cart-hidden')
-    //         booksCounter.innerHTML = booksInCartCount
-    //         // console.log(booksCounter, booksCounter)
-    //         console.log('in if 2')
-    //     } else {
-    //         booksCounter.classList.add('cart-hidden')
-    //         booksCounter.innerHTML = ''
-    //         console.log('in else 2')
-    //     }
-    //     console.log('booksInCartCount', booksInCartCount)
-    //     // return booksInCartCount
-    // }
+    // Функция которая дожидается элементы, которых не было при загрузке страницы, т.к. они были созданы в этом скрипте
+    function waitForElement() {
+        let observer = new MutationObserver(mutations => {
+          mutations.forEach(() => {
+            btnBuyNow = catalog.querySelectorAll('.btn-buy-now')
+            const description = catalog.querySelectorAll('.books-card__description')
+            // Если на странице уже появились кнопки 'Buy Now', то запускаем необходимые функции
+            if (btnBuyNow) {
+            loadMore(btnBuyNow)
+            buyNow(btnBuyNow)
+            starRating()
+            truncateText(description)
+            // если кнопок 'Buy Now' нет, то отключаем наблюдатель изменений MutationObserver
+            } else {
+                observer.disconnect()
+            }
+          })
+        })
+        // отслеживаем изменения в DOM-дереве, связанные со списком книг
+        observer.observe(books, { childList: true })
+    }
+
+    // Вызываем функцию наблюдатель искомых изменений
+    waitForElement()
+
 }
-
-// waitForElement()
-
-
-
-    // function waitForSelectorOnce(selector) {
-    //     return (resolve) => {
-    //       let observer = null;
-    //       let checker = () => {
-    //         if (catalog.querySelector(selector)) {
-    //           observer && observer.disconnect();
-    //           resolve();
-    //           return true;
-    //         } else {
-    //           return false;
-    //         }
-    //       };
-
-    //       // проверяем, может быть селектор сразу имеется на странице
-    //       // тогда и не надо инициализировать MutationObserver
-    //       if (!checker()) {
-    //         observer = new MutationObserver(checker);
-    //         observer.observe(document.documentElement, {
-    //           attributes: true,
-    //           childList: true,
-    //           subtree: true,
-    //         });
-    //       }
-    //     };
-    // }
-
-    // waitForSelectorOnce('.btn-buy-now')
