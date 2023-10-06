@@ -1,6 +1,8 @@
 import './style.scss';
 import {images, initSlider} from './js/slider';
 import { initCatalog } from './js/catalog';
+import menuBurger from './js/menuBurger';
+import goTop from './js/gotop';
 
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -11,4 +13,6 @@ document.addEventListener("DOMContentLoaded", () => {
     }
     initSlider(images, sliderOptions);
     initCatalog()
+    menuBurger()
+    goTop()
   });

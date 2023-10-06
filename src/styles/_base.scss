@@ -13,7 +13,6 @@ body {
   font-style: normal;
   overflow-x: hidden;
   color: $base-black;
-  // margin: 0 auto;
 }
 
 img {
@@ -52,12 +51,12 @@ li {
 
 @media (max-width: 900px) {
   .container {
-    max-width: 600px;
+    padding: 0 30px;
   }
 }
 
-@media (max-width: 600px) {
+@media (max-width: 767px) {
   .container {
-    max-width: 400px;
+    padding: 0 15px;
   }
 }

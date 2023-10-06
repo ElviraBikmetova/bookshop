@@ -1,0 +1,36 @@
+@import 'variables';
+
+.go-top {
+    position: fixed;
+    right: 10%;
+    bottom: 10%;
+    width: 30px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    display: none;
+    font-size: 20px;
+    color: $deep-purple;
+    border: 1px solid $deep-purple;
+    border-radius: 50%;
+    background-color: rgba(255, 255, 255, 0.9);
+    box-shadow: 0px 0px 20px 10px rgba(255,255,255,1);
+}
+
+.go-top_show {
+    display: flex;
+}
+
+@media (hover: hover) {
+    .go-top:hover {
+        background-color: $light-purple;
+    }
+}
+
+@media (hover: none) {
+    .go-top:active {
+        background-color: $light-purple;
+    }
+}

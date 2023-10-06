@@ -1,12 +1,15 @@
 {
   "name": "bookshop",
   "version": "1.0.0",
+  "homepage": "http://repos.store/bookshop/",
   "description": "",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "webpack",
-    "start": "webpack-dev-server"
+    "start": "webpack-dev-server",
+    "deploy": "webpack --config webpack.config.js && gh-pages -d dist",
+    "predeploy": "npm run build"
   },
   "author": "Elvira",
   "license": "ISC",
@@ -27,6 +30,7 @@
   },
   "dependencies": {
     "cross-env": "^7.0.3",
-    "dotenv": "^16.3.1"
+    "dotenv": "^16.3.1",
+    "gh-pages": "^6.0.0"
   }
 }
