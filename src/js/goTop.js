@@ -1,4 +1,5 @@
 
+// Функция для кпопки прокрутки к началу страницы
 function goTop() {
     // считываем кнопку
     const goTopBtn = document.querySelector(".go-top");
