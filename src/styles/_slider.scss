@@ -1,11 +1,11 @@
-@import 'variables';
+@use 'variables' as vars;
 
 @mixin card-link($width, $height, $right, $background-color) {
     font-weight: 700;
     font-size: 18px;
     line-height: 1.22;
     text-transform: uppercase;
-    color: $base-black;
+    color: vars.$base-black;
     position: absolute;
     width: $width;
     height: $height;
@@ -58,17 +58,17 @@
 .slider__dots-item {
   width: 12px;
   height: 12px;
-  background: $light-purple;
+  background: vars.$light-purple;
   border-radius: 50%;
   cursor: pointer;
   transition: background 0.4s ease;
   &:hover, &.active {
-    background: $purple;
+    background: vars.$purple;
   }
 }
 
 .card-link1 {
-  @include card-link(149px, 204px, -86px, $purple);
+  @include card-link(149px, 204px, -86px, vars.$purple);
   // top: 195px;
   top: 23.84%;
   &:hover {

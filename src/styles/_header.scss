@@ -1,4 +1,4 @@
-@import 'variables';
+@use 'variables' as vars;
 
 @mixin column-gap40 {
     display: flex;
@@ -51,14 +51,14 @@
         font-size: 10px;
         line-height: 1.2;
         text-transform: uppercase;
-        color: $base-gray;
+        color: vars.$base-gray;
         &.header__nav_active {
-            color: $base-black;
+            color: vars.$base-black;
         }
     }
 }
 .header__nav_active {
-    color: $base-black;
+    color: vars.$base-black;
 }
 .user-area {
     position: relative;
@@ -92,13 +92,13 @@
 
 @media (hover: hover) {
     .header__nav:hover {
-        color: $base-black;
+        color: vars.$base-black;
     }
 }
 
 @media (hover: none) {
     .header__nav:active {
-        color: $base-black;
+        color: vars.$base-black;
     }
 }
 
@@ -117,7 +117,7 @@
         height: 24px;
         &::before, &::after, span {
             content: '';
-            background-color: $base-black;
+            background-color: vars.$base-black;
             position: absolute;
             width: 100%;
             height: 3px;
@@ -155,7 +155,7 @@
         height: 100%;
         overflow: auto;
         transition: all 0.3s ease 0s;
-        background: $light-purple;
+        background: vars.$light-purple;
         z-index: 1;
         &.active {
             top: 0;

@@ -1,4 +1,4 @@
-@import 'variables';
+@use 'variables' as vars;
 
 *, *::after, *::before {
     margin: 0;
@@ -9,10 +9,10 @@
 body {
   font-weight: normal;
   font-size: 16px;
-  font-family: 'Montserrat', sans-serif;
+  font-family: vars.$primary-font;
   font-style: normal;
   overflow-x: hidden;
-  color: $base-black;
+  color: vars.$base-black;
 }
 
 img {
@@ -25,7 +25,7 @@ img {
 a {
     text-decoration: none;
     cursor: pointer;
-    color: $base-black;
+    color: vars.$base-black;
 }
 
 button {

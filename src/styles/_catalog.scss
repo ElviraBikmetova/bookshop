@@ -1,4 +1,11 @@
-@import 'variables';
+@use 'variables' as vars;
+
+$gradient: linear-gradient(
+    90deg,
+    #000 calc(100% - 18px),
+    rgba(0, 0, 0, .25) calc(100% - 9px),
+    transparent
+);
 
 .catalog {
 padding-bottom: 74px;
@@ -30,18 +37,18 @@ padding-bottom: 74px;
         left: -160px;
         width: 416px;
         height: 100%;
-        background: $light-purple;
+        background: vars.$light-purple;
         z-index: -1;
     }
     li {
         position: relative;
     }
     a {
-        color: $base-gray;
+        color: vars.$base-gray;
         white-space: nowrap;
         &.categories-nav__item_first,
         &.active-category {
-            color: $base-black;
+            color: vars.$base-black;
             font-size: 16px;
             font-weight: 700;
             &::before {
@@ -98,8 +105,8 @@ padding-bottom: 74px;
 }
 
 .books-card__gray-text {
-    color: $base-gray;
-    font-family: Open Sans, sans-serif;
+    color: vars.$base-gray;
+    font-family: vars.$secondary-font;
     font-size: 10px;
 
 }
@@ -176,13 +183,13 @@ padding-bottom: 74px;
 }
 
 .btn {
-    color: $deep-purple;
+    color: vars.$deep-purple;
     font-size: 8px;
     font-weight: 700;
     text-transform: uppercase;
     width: inherit;
     height: 45px;
-    border: 1px solid $deep-purple;;
+    border: 1px solid vars.$deep-purple;;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -191,7 +198,7 @@ padding-bottom: 74px;
 
 .in-the-cart {
     border-color: #EEEDF5;
-    color: $base-gray;
+    color: vars.$base-gray;
 }
 
 .btn-load-more {
@@ -202,7 +209,7 @@ padding-bottom: 74px;
 
 @media (hover: hover) {
     .categories-nav a:hover {
-        color: $base-black;
+        color: vars.$base-black;
     }
     .btn:hover {
         background: #EEEDF5;
@@ -211,7 +218,7 @@ padding-bottom: 74px;
 
 @media (hover: none) {
     .categories-nav a:active {
-        color: $base-black;
+        color: vars.$base-black;
     }
     .btn:active {
         background: #EEEDF5;
@@ -237,21 +244,11 @@ padding-bottom: 74px;
         max-width: 100%;
         max-height: 100%;
         width: 100%;
-        background: $light-purple;
+        background: vars.$light-purple;
         padding: 30px 0px;
         overflow: hidden;
-        mask-image: linear-gradient(
-            90deg,
-            #000 calc(100% - 18px),
-            rgba(0, 0, 0, .25) calc(100% - 9px),
-            transparent
-        );
-        -webkit-mask-image: linear-gradient(
-            90deg,
-            #000 calc(100% - 50px),
-            rgba(0, 0, 0, .25) calc(100% - 9px),
-            transparent
-        );
+        mask-image: $gradient;
+        -webkit-mask-image: $gradient;
         ul {
             flex-direction: row;
             align-items: center;
